@@ -1,0 +1,27 @@
+{
+  "name": "nodeapi_with_express_and_postgresql",
+  "version": "1.0.0",
+  "description": "Assignment containing use of express ,postgressql",
+  "main": "index.js",
+  "scripts": {
+    "test": "N/A",
+    "start":"nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/virennanda/NODEJS_ASSIGNMENTS.git"
+  },
+  "keywords": [
+    "postgresql"
+  ],
+  "author": "VirenNanda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/virennanda/NODEJS_ASSIGNMENTS/issues"
+  },
+  "homepage": "https://github.com/virennanda/NODEJS_ASSIGNMENTS#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.5.1"
+  }
+}
