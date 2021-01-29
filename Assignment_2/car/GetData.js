@@ -4,9 +4,9 @@ const getCars = (req, res) => {
     let query = `
 select
     c.id,
-    c."name" carName,
-    m."name" modelName,
-    tm."name" makeName 
+    c."name" "carName",
+    m."name" "modelName",
+    tm."name" "makeName" 
 FROM 
     tbl_car c
         inner join  tbl_make tm 
@@ -29,9 +29,9 @@ const getCarsById = (req, res) => {
     let query = `
 select
     c.id,
-    c."name" carName,
-    m."name" modelName,
-    tm."name" makeName 
+    c."name" "carName",
+    m."name" "modelName",
+    tm."name" "makeName" 
 FROM 
     tbl_car c
         inner join  tbl_make tm 
@@ -50,9 +50,28 @@ where
     })
 }
 
+const carExists = async (carName) => {
+    let query = `
+SELECT 
+    c.id
+FROM
+    tbl_car c
+WHERE
+    c."name"=$1
+
+`
+    let answer = await db.query(query, [carName]).then(results => {
+        return results.rowCount > 0 ? true : false;
+
+    })
+        .catch(err => console.error(err))
+
+    return answer;
+}
 
 
 module.exports = {
     getCars,
-    getCarsById
+    getCarsById,
+    carExists
 }
