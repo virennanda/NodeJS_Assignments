@@ -2,7 +2,7 @@ const { DB: db } = require("../dbPool");
 const { modelExists } = require("../car_model/getData");
 const { makeExists } = require("../make/getData");
 const { carExists } = require("./GetData")
-const { isCarValid } = require("../util/validate");
+const { isCarValid, isValid } = require("../util/validate");
 const { addMake } = require("../make/setData");
 const { addModel } = require("../car_model/setData");
 
@@ -21,7 +21,6 @@ const addCar = async (req, res) => {
             return res.status(200).json({ "message": `Car ${carName} is already present` })
         }
 
-
         let modelId = await addModel(modelName);
         let makeId = await addMake(makeName);
 
@@ -30,23 +29,48 @@ const addCar = async (req, res) => {
 
         let carResult = await db.query(query, [carName, makeId, modelId])
         console.log(carResult.rows);
-        res.json(
-            {
-                "success": carResult.rows,
-                makeId,
-                modelId,
-                isCarAvalilable,
-                modelAvailable: modelId,
-                makeAvailable: makeId
-            })
+        res.json({
+            "success": "Car added Successfully"
+        })
     } catch (err) {
         console.error(err)
     }
 
 }
 
+const updateCar = async (req, res) => {
+    let { id, carName, modelName, makeName } = req.body
+
+    if (!(isCarValid(carName, modelName, makeName) && isValid(id))) {
+        return res.json({ "error": "parameters are invalid" })
+    }
+    try {
+        let isCarAvailable = await carExists(carName);
+
+        if (!isCarAvailable) {
+
+            let makeId = await addMake(makeName);
+            let modelId = await addModel(modelName);
+
+            let query = `UPDATE tbl_car
+        SET "name"=$1, make_id=$2, model_id=$3
+        WHERE id=$4
+        `;
+            let results = await db.query(query, [carName, makeId, modelId, id]);
+
+            return res.json({ "message ": " Update Success" });
+        }
+
+        return res.json({ "message": "car Name Already Exists" });
+
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
 
 
 module.exports = {
-    addCar
+    addCar,
+    updateCar
 }

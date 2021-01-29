@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const { PORT } = require("./config");
 const { getCars, getCarsById } = require('./car/GetData');
-const { carExists, addCar } = require("./car/setData");
+const { carExists, addCar, updateCar } = require("./car/setData");
 
 const app = express();
 
@@ -21,6 +21,7 @@ app.get('/', async (req, res) => {
 });
 app.post('/car', addCar);
 
+app.put('/car', updateCar);
 
 app.get('/cars', getCars);
 

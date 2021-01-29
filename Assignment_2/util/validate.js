@@ -1,7 +1,12 @@
 const isValid = (param) => {
 
+
+
     if (typeof (param) === "undefined")
         return false;
+
+    if (typeof (param) === "bigint" || typeof (param) == "number")
+        return true;
 
     if (param.trim() === '')
         return false;
@@ -17,5 +22,6 @@ const isCarValid = (carName, modelName, makeName) => {
 }
 
 module.exports = {
-    isCarValid
+    isCarValid,
+    isValid
 }
