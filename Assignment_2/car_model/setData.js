@@ -14,6 +14,7 @@ const addModel = async (modelName) => {
 
     let { rows } = await db.query(query);
     modelId = rows[0].id;
+
     if (typeof (modelId) === "undefined")
         throw new Error("ID not recieved from insert in car model")
 

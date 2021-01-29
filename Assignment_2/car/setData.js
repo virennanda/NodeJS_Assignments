@@ -22,21 +22,23 @@ const addCar = async (req, res) => {
         }
 
 
-
-        if (modelId === 0) {
-            modelId = await addModel(modelName);
-        }
-        if (makeId === 0) {
-            makeId = await addMake(makeName);
-        }
+        let modelId = await addModel(modelName);
+        let makeId = await addMake(makeName);
 
         let query = `INSERT INTO tbl_car(name,make_id,model_id)
-    VALUES ($1,$2,$3)`;
+    VALUES ($1,$2,$3) RETURNING id`;
 
-        // let carResult = await db.query(query, [carName, makeId, modelId]).
-
-        //     console.log(carResult.rows);
-        res.json({ makeId, modelId, isCarAvalilable, modelAvailable: modelId, makeAvailable: makeId })
+        let carResult = await db.query(query, [carName, makeId, modelId])
+        console.log(carResult.rows);
+        res.json(
+            {
+                "success": carResult.rows,
+                makeId,
+                modelId,
+                isCarAvalilable,
+                modelAvailable: modelId,
+                makeAvailable: makeId
+            })
     } catch (err) {
         console.error(err)
     }

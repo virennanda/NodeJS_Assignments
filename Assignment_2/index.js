@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const { PORT } = require("./config");
 const { getCars, getCarsById } = require('./car/GetData');
-
+const { carExists, addCar } = require("./car/setData");
 
 const app = express();
 
@@ -16,9 +16,11 @@ app.use(bodyParser.urlencoded(
     }
 ));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     res.json({ info: 'Node.js, Express, and Postgres API' })
 });
+app.post('/car', addCar);
+
 
 app.get('/cars', getCars);
 

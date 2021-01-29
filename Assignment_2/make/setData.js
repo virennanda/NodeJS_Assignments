@@ -18,7 +18,7 @@ const addMake = async (makeName) => {
     if (typeof (makeId) === "undefined")
         throw new Error("ID not recieved from insert in car maker")
 
-    return makeResults.rows[0].id;
+    return makeId;
 
 }
 
