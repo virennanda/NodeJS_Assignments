@@ -1,4 +1,4 @@
-const { DB: db } = require("../dbPool");
+const { DB: db } = require("../../dbPool");
 const { modelExists } = require("./getData")
 
 const addModel = async (modelName) => {

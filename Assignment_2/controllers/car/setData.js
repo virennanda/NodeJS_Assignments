@@ -1,10 +1,30 @@
-const { DB: db } = require("../dbPool");
+const { DB: db } = require("../../dbPool");
 const { modelExists } = require("../car_model/getData");
 const { makeExists } = require("../make/getData");
 const { carExists } = require("./GetData")
-const { isCarValid, isValid } = require("../util/validate");
+const { isCarValid, isValid } = require("../../util/validate");
 const { addMake } = require("../make/setData");
 const { addModel } = require("../car_model/setData");
+
+
+const addCarImage = async (req, res, next) => {
+    let { id } = req.params;
+    let { file } = req
+    console.log(file);
+    let isCarAvailable = await carExists('', id);
+    if (isCarAvailable) {
+        let query = `INSERT INTO public.car_image
+        (car_id, img_path)
+        VALUES($1,$2);
+        `
+        let result = await db.query(query, [id, file.path]);
+        return result.rowCount > 0
+            ? res.json({ 'path': req.url + file.path })
+            : res.send({ 'error': 'image not uploaded' });
+    }
+    return res.status(400).json({ 'error': 'invalid car ID' });
+
+}
 
 const addCar = async (req, res) => {
     const { carName, modelName, makeName } = req.body;
@@ -69,8 +89,27 @@ const updateCar = async (req, res) => {
     }
 }
 
+const deleteCar = async (req, res) => {
+    const { id } = req.params;
+    if (!isValid(id))
+        return res.status(400).json({ "error": "Please Provide ID" });
+
+    let query = `DELETE FROM tbl_car
+    WHERE id=$1;
+    `
+    try {
+        let { rowCount } = await db.query(query, [id]);
+
+        return rowCount > 0 ? res.json({ "message": "Record Deleted " }) : res.json({ "message": "Record was not found or either not deleted" });
+    } catch (err) {
+        res.status(500).json({ "error": "Something went wrong" });
+        console.error(err);
+    }
+}
 
 module.exports = {
     addCar,
-    updateCar
+    updateCar,
+    deleteCar,
+    addCarImage
 }

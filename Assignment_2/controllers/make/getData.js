@@ -1,4 +1,4 @@
-const { DB: db } = require("../dbPool");
+const { DB: db } = require("../../dbPool");
 
 const makeExists = async (makeName) => {
     let query = `

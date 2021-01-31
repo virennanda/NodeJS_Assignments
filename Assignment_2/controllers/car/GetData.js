@@ -1,4 +1,4 @@
-const { DB: db } = require("../dbPool");
+const { DB: db } = require("../../dbPool");
 
 const getCars = (req, res) => {
     let query = `
@@ -6,13 +6,16 @@ select
     c.id,
     c."name" "carName",
     m."name" "modelName",
-    tm."name" "makeName" 
+    tm."name" "makeName",
+    ci."img_path" "path" 
 FROM 
     tbl_car c
         inner join  tbl_make tm 
             on tm.id =c.make_id 
         inner join tbl_model m
-            on m.id =c.model_id 
+            on m.id =c.model_id
+        left join car_image ci
+            on ci.car_id=c.id 
     `;
 
     db.query(query, (error, results) => {
@@ -31,13 +34,17 @@ select
     c.id,
     c."name" "carName",
     m."name" "modelName",
-    tm."name" "makeName" 
+    tm."name" "makeName",
+    ci."img_path" "path"  
 FROM 
     tbl_car c
         inner join  tbl_make tm 
             on tm.id =c.make_id 
         inner join tbl_model m
             on m.id =c.model_id 
+        left join car_image ci
+            on ci.car_id=c.id 
+         
 where
     c.id=$1
     `;
@@ -50,17 +57,17 @@ where
     })
 }
 
-const carExists = async (carName) => {
+const carExists = async (carName, id = 0) => {
     let query = `
 SELECT 
     c.id
 FROM
     tbl_car c
 WHERE
-    c."name"=$1
+    c."name"=$1 OR c.id=$2
 
 `
-    let answer = await db.query(query, [carName]).then(results => {
+    let answer = await db.query(query, [carName, id]).then(results => {
         return results.rowCount > 0 ? true : false;
 
     })
